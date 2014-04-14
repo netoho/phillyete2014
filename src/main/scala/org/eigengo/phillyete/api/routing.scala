@@ -19,13 +19,28 @@ trait UriMatchingRoute extends Directives {
     get {
       path("customer" / IntNumber) { id =>
         complete {
-          s"Customer with id ${id}"
+          s"Customer with id $id"
         }
       } ~
       path("customer") {
         parameter('id.as[Int]) { id =>
           complete {
-            s"Customer with id ${id}"
+            s"Customer with id $id"
+          }
+        }
+      }
+    }
+
+}
+
+trait HeadersMatchingRoute extends Directives {
+
+  lazy val headersMatchingRoute =
+    get {
+      path("browser") {
+        headerValueByName("User-Agent") { userAgent =>
+          complete {
+            s"Client is $userAgent"
           }
         }
       }
@@ -37,6 +52,6 @@ class MainService(route: Route) extends HttpServiceActor {
   def receive: Receive = runRoute(route)
 }
 
-object MainService extends DemoRoute with UriMatchingRoute {
-  lazy val route = uriMatchingRoute
+object MainService extends DemoRoute with UriMatchingRoute with HeadersMatchingRoute {
+  lazy val route = uriMatchingRoute ~ headersMatchingRoute
 }

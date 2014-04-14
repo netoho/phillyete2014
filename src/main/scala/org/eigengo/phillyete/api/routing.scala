@@ -13,10 +13,30 @@ trait DemoRoute extends Directives {
 
 }
 
+trait UriMatchingRoute extends Directives {
+
+  lazy val uriMatchingRoute =
+    get {
+      path("customer" / IntNumber) { id =>
+        complete {
+          s"Customer with id ${id}"
+        }
+      } ~
+      path("customer") {
+        parameter('id.as[Int]) { id =>
+          complete {
+            s"Customer with id ${id}"
+          }
+        }
+      }
+    }
+
+}
+
 class MainService(route: Route) extends HttpServiceActor {
   def receive: Receive = runRoute(route)
 }
 
-object MainService extends DemoRoute {
-  lazy val route = demoRoute
+object MainService extends DemoRoute with UriMatchingRoute {
+  lazy val route = uriMatchingRoute
 }

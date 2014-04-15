@@ -1,6 +1,7 @@
 package org.eigengo.phillyete.api
 
 import spray.routing.{Route, Directives, HttpServiceActor}
+import spray.http.{HttpCookie, HttpResponse}
 
 trait DemoRoute extends Directives {
 
@@ -15,6 +16,12 @@ trait DemoRoute extends Directives {
 
 trait UriMatchingRoute extends Directives {
 
+  case class Colour(r: Int, g: Int, b: Int) {
+    require(r >= 0 && r <= 255)
+    require(g >= 0 && g <= 255)
+    require(b >= 0 && b <= 255)
+  }
+
   lazy val uriMatchingRoute =
     get {
       path("customer" / IntNumber) { id =>
@@ -26,6 +33,20 @@ trait UriMatchingRoute extends Directives {
         parameter('id.as[Int]) { id =>
           complete {
             s"Customer with id $id"
+          }
+        }
+      }
+      path("colour") {
+        parameters(('r.as[Int], 'g.as[Int], 'b.as[Int])).as(Colour) { colour: Colour =>
+          import colour._
+          complete {
+            <html>
+              <body>
+                <p>{r}</p>
+                <p>{g}</p>
+                <p>{b}</p>
+              </body>
+            </html>
           }
         }
       }
@@ -48,10 +69,33 @@ trait HeadersMatchingRoute extends Directives {
 
 }
 
+trait CookiesMatchingRoute extends Directives {
+
+  lazy val cookiesMatchingRoute =
+    get {
+      path("cookie") {
+        cookie("spray") { spray =>
+          complete {
+            s"The value is $spray"
+          }
+        }
+      }
+    } ~
+    post {
+      path("cookie") {
+        setCookie(HttpCookie("spray", "SGVsbG8sIHdvcmxkCg==", httpOnly = true)) {
+          complete {
+            "Cookie created"
+          }
+        }
+      }
+    }
+}
+
 class MainService(route: Route) extends HttpServiceActor {
   def receive: Receive = runRoute(route)
 }
 
-object MainService extends DemoRoute with UriMatchingRoute with HeadersMatchingRoute {
-  lazy val route = uriMatchingRoute ~ headersMatchingRoute
+object MainService extends DemoRoute with UriMatchingRoute with HeadersMatchingRoute with CookiesMatchingRoute {
+  lazy val route = uriMatchingRoute ~ headersMatchingRoute ~ cookiesMatchingRoute
 }

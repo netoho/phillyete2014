@@ -1,4 +1,4 @@
-phillyete2014
+philyete2014
 =============
 
-Philly ETE Reactive APIs talk
+Phily ETE Reactive APIs talk

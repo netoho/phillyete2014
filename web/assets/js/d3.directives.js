@@ -28,7 +28,7 @@ angular.module('d3.directives', ['d3.core'])
               d3Service.d3().then(function(d3) {
                 function fmt(element, x) {
                   element.style("width", function(d) { return x(d.value) + "px"; })
-                         .text(function(d) { return d.name; });
+                         .text(function(d) { return d.name + " (" + d.value + ")"; });
                 }
 
                 attrs.$observe('data', function(rawValue) {

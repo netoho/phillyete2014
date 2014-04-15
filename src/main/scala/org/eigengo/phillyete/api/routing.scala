@@ -1,7 +1,7 @@
 package org.eigengo.phillyete.api
 
 import spray.routing.{Route, Directives, HttpServiceActor}
-import spray.http.{HttpCookie, HttpResponse}
+import spray.http.HttpCookie
 
 trait DemoRoute extends Directives {
 
@@ -92,10 +92,3 @@ trait CookiesMatchingRoute extends Directives {
     }
 }
 
-class MainService(route: Route) extends HttpServiceActor {
-  def receive: Receive = runRoute(route)
-}
-
-object MainService extends DemoRoute with UriMatchingRoute with HeadersMatchingRoute with CookiesMatchingRoute {
-  lazy val route = uriMatchingRoute ~ headersMatchingRoute ~ cookiesMatchingRoute
-}

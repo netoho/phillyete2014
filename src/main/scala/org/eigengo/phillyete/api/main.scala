@@ -3,6 +3,15 @@ package org.eigengo.phillyete.api
 import akka.actor.{Props, ActorSystem}
 import akka.io.IO
 import spray.can.Http
+import spray.routing._
+
+class MainService(route: Route) extends HttpServiceActor {
+  def receive: Receive = runRoute(route)
+}
+
+object MainService extends DemoRoute with UriMatchingRoute with HeadersMatchingRoute with CookiesMatchingRoute {
+  lazy val route = uriMatchingRoute ~ headersMatchingRoute ~ cookiesMatchingRoute
+}
 
 object Main extends App {
   val system = ActorSystem()

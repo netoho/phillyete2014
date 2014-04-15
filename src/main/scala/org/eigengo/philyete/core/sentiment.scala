@@ -43,7 +43,6 @@ class SentimentAnalysis {
       updateCounts("negative.gurus", negative)
     }
 
-    updateCounts("all", 1)
     updateLanguages(tweet.user.lang, 1)
     updatePlaces(tweet.place.toString, 1)
 

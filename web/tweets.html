@@ -22,7 +22,7 @@
 <body>
 <div ng-app="tweets.app" ng-controller="TweetsCtrl">
     <div>
-        <input type="text" ng-model="expression" size="80" placeholder="{evendistr 25 [0..100]} forever every 1000ms"/>
+        <input type="text" ng-model="expression" size="80" />
         <button ng-click="executeExpression()" class="btn-primary">Execute</button>
         <button ng-click="stop()" ng-show="running" class="btn-danger">Stop</button>
     </div>
@@ -33,7 +33,12 @@
         </pane>
         <pane title="Canvas">
             <h3>Visual representation</h3>
-            <barchart2d data="{{values.counts.positives}}"/>
+            <h5>Counts</h5>
+            <barchart2d data="{{values.counts}}"></barchart2d>
+            <h5>Languages</h5>
+            <barchart2d data="{{values.languages}}"></barchart2d>
+            <h5>Places / Locations</h5>
+            <barchart2d data="{{values.places}}"></barchart2d>
         </pane>
     </tabs>
 </div>

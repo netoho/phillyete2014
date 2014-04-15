@@ -27,16 +27,16 @@ angular.module('d3.directives', ['d3.core'])
       link: function(scope, element, attrs) {
               d3Service.d3().then(function(d3) {
                 function fmt(element, x) {
-                  element.style("width", function(d) { return x(d) + "px"; })
-                         .text(function(d) { return d; });
+                  element.style("width", function(d) { return x(d.value) + "px"; })
+                         .text(function(d) { return d.name; });
                 }
 
                 attrs.$observe('data', function(rawValue) {
                   var data = JSON.parse(rawValue);
 
                   var x = d3.scale.linear()
-                      .domain([0, d3.max(data)])
-                      .range([0, 420]);
+                      .domain([0, d3.max(data.map(function(d) { return d.value; }))])
+                      .range([0, 1000]);
 
                   var p = d3.select(element[0]).selectAll("div").data(data);
                   fmt(p.enter().append("div"), x);

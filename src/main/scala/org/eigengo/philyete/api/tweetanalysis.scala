@@ -1,18 +1,11 @@
 package org.eigengo.philyete.api
 
-import spray.routing.{RequestContext, Route, Directives}
+import spray.routing.{Route, Directives}
 import akka.actor.{Props, Actor, ActorRefFactory, ActorRef}
 import spray.http._
-import spray.http.HttpResponse
-import spray.routing.RequestContext
 import spray.can.Http
-import akka.actor.Actor.Receive
 import org.eigengo.philyete.core.{OAuthTwitterAuthorization, TweetReaderActor}
 import spray.json._
-import spray.http.HttpResponse
-import spray.routing.RequestContext
-import spray.http.ChunkedResponseStart
-import spray.http.HttpHeaders.RawHeader
 import spray.http.HttpResponse
 import spray.routing.RequestContext
 import spray.http.HttpHeaders.RawHeader
@@ -51,7 +44,9 @@ trait TweetAnalysisRoute extends Directives {
         //   "languages":{"ar": 1, "en": 3}
         // }
 
-        val items = analysed.map { case (category, elements) => category -> JsObject(elements.mapValues(JsNumber.apply)) }
+        val items = analysed.map { case (category, elements) => category ->
+          JsArray(elements.map { case (k, v) => JsObject("name" -> JsString(k), "value" -> JsNumber(v)) }.toList)
+        }
         val body = CompactPrinter(JsObject(items))
         responder ! MessageChunk(body)
     }

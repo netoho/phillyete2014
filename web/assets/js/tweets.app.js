@@ -7,13 +7,13 @@ angular.module('tweets.app', ['d3.directives', 'tweets.directives'])
     var xhr = null;
     var offset = 3;
     $scope.stop = function() {
-      if (xhr != null) xhr.close();
+      if (xhr != null) xhr.abort();
       xhr = null;
       $scope.running = false;
     };
 
     $scope.executeExpression = function() {
-      if (xhr != null) xhr.close();
+      if (xhr != null) xhr.abort();
       var xhr = new XMLHttpRequest();
       xhr.onerror = function(x) {
         

@@ -1,4 +1,4 @@
-package org.eigengo.phillyete
+package org.eigengo.philyete
 
 import org.specs2.mutable.SpecificationLike
 import akka.actor.ActorSystem

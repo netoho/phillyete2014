@@ -1,6 +1,5 @@
-package org.eigengo.phillyete.core
+package org.eigengo.philyete.core
 
-import akka.actor.Actor
 import scala.io.Source
 
 trait SentimentSets {
@@ -21,7 +20,7 @@ trait CSVLoadedSentimentSets extends SentimentSets {
   }
 }
 
-class SentimentAnalysisActor extends Actor {
+class SentimentAnalysis {
   this: SentimentSets =>
 
   private val counts = collection.mutable.Map[String, Int]()
@@ -33,21 +32,21 @@ class SentimentAnalysisActor extends Actor {
   val updateLanguages = update(languages)_
   val updatePlaces = update(places)_
 
-  def receive: Receive = {
-    case tweet: Tweet =>
-      val positive: Int = if (positiveWords.exists(word => tweet.text.toLowerCase contains word)) 1 else 0
-      val negative: Int = if (negativeWords.exists(word => tweet.text.toLowerCase contains word)) 1 else 0
+  def onTweet(tweet: Tweet): Map[String, Map[String, Int]] = {
+    val positive: Int = if (positiveWords.exists(word => tweet.text.toLowerCase contains word)) 1 else 0
+    val negative: Int = if (negativeWords.exists(word => tweet.text.toLowerCase contains word)) 1 else 0
 
-      updateCounts("positive", positive)
-      updateCounts("negative", negative)
-      if (tweet.user.followersCount > 200) {
-        updateCounts("positive.gurus", positive)
-        updateCounts("negative.gurus", negative)
-      }
-      updateCounts("all", 1)
-      updateLanguages(tweet.user.lang, 1)
-      updatePlaces(tweet.place.toString, 1)
+    updateCounts("positive", positive)
+    updateCounts("negative", negative)
+    if (tweet.user.followersCount > 200) {
+      updateCounts("positive.gurus", positive)
+      updateCounts("negative.gurus", negative)
+    }
 
-      // outputCount(List(counts, places, languages))
+    updateCounts("all", 1)
+    updateLanguages(tweet.user.lang, 1)
+    updatePlaces(tweet.place.toString, 1)
+
+    Map("counts" -> counts.toMap, "languages" -> languages.toMap, "places" -> places.toMap)
   }
 }

@@ -1,4 +1,4 @@
-package org.eigengo.phillyete.api
+package org.eigengo.philyete.api
 
 import spray.routing.{Route, Directives, HttpServiceActor}
 import spray.http.HttpCookie

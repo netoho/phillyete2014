@@ -1,4 +1,4 @@
-package org.eigengo.phillyete.api
+package org.eigengo.philyete.api
 
 import org.specs2.mutable.Specification
 import spray.testkit.Specs2RouteTest

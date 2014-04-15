@@ -1,4 +1,4 @@
-package org.eigengo.phillyete.core
+package org.eigengo.philyete.core
 
 import spray.httpx.unmarshalling.{MalformedContent, Unmarshaller, Deserialized}
 import spray.http._
@@ -19,7 +19,7 @@ trait TwitterAuthorization {
 trait OAuthTwitterAuthorization extends TwitterAuthorization {
   import OAuth._
   val home = System.getProperty("user.home")
-  val lines = Source.fromFile(s"$home/.twitter/scalaexchange2013").getLines().toList
+  val lines = Source.fromFile(s"$home/.twitter/philyete2014").getLines().toList
 
   val consumer = Consumer(lines(0), lines(1))
   val token = Token(lines(2), lines(3))
@@ -65,13 +65,14 @@ trait TweetMarshaller {
   }
 }
 
-object TweetStreamerActor {
+object TweetReaderActor {
   val twitterUri = Uri("https://stream.twitter.com/1.1/statuses/filter.json")
 }
 
-class TweetStreamerActor(uri: Uri, processor: ActorRef) extends Actor with TweetMarshaller {
+class TweetReaderActor(uri: Uri, receiver: ActorRef) extends Actor with TweetMarshaller {
   this: TwitterAuthorization =>
   val io = IO(Http)(context.system)
+  val sentimentAnalysis = new SentimentAnalysis with CSVLoadedSentimentSets
 
   def receive: Receive = {
     case query: String =>
@@ -81,7 +82,7 @@ class TweetStreamerActor(uri: Uri, processor: ActorRef) extends Actor with Tweet
     case ChunkedResponseStart(_) =>
     case MessageChunk(entity, _) =>
       TweetUnmarshaller(entity) match {
-        case Right(tweet) => processor ! tweet
+        case Right(tweet) => receiver ! sentimentAnalysis.onTweet(tweet)
         case _            =>
       }
     case _ =>

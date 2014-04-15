@@ -35,6 +35,6 @@ parallelExecution in Test := false
 
 transitiveClassifiers := Seq("sources")
 
-initialCommands in console := "import org.eigengo.phillyete._,akka.actor._"
+initialCommands in console := "import org.eigengo.philyete._,akka.actor._"
 
 initialCommands in (Test, console) <<= (initialCommands in console)(_ + ",akka.testkit._")

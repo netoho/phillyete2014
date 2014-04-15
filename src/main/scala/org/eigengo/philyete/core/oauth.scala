@@ -1,4 +1,4 @@
-package org.eigengo.phillyete.core
+package org.eigengo.philyete.core
 
 import javax.crypto
 import java.nio.charset.Charset

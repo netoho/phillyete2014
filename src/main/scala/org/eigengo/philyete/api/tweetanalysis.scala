@@ -14,7 +14,7 @@ trait TweetAnalysisRoute extends Directives {
   def tweetAnalysisRoute(implicit actorRefFactory: ActorRefFactory): Route =
     post {
       path("tweets")
-        parameter('q.as[String])(sendTweetAnalysis)
+        parameter('q)(sendTweetAnalysis)
       }
 
   def sendTweetAnalysis(query: String)(ctx: RequestContext)(implicit actorRefFactory: ActorRefFactory): Unit = {
@@ -30,12 +30,14 @@ trait TweetAnalysisRoute extends Directives {
     def receive: Receive = {
       case 'start =>
         reader ! query
+      case 'continue =>
+        println("Delivered")
       case _: Http.ConnectionClosed =>
         context.stop(reader)
         context.stop(self)
       case analysed: Map[String, Map[String, Int]] =>
         println("Got " + analysed)
-        responder ! MessageChunk(s"""{ "x":"$analysed" } """)
+        responder ! MessageChunk(s"""{ "x":"$analysed" } """).withAck('continue)
     }
   }
 

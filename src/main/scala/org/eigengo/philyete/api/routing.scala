@@ -1,6 +1,6 @@
 package org.eigengo.philyete.api
 
-import spray.routing.{Route, Directives, HttpServiceActor}
+import spray.routing.Directives
 import spray.http.HttpCookie
 
 trait DemoRoute extends Directives {

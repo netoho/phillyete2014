@@ -76,7 +76,7 @@ class TweetReaderActor(uri: Uri, receiver: ActorRef) extends Actor with TweetMar
 
   def receive: Receive = {
     case query: String =>
-      val post = HttpEntity(ContentType(MediaTypes.`application/x-www-form-urlencoded`), s"track=$query")
+      val post = HttpEntity(ContentType(MediaTypes.`application/x-www-form-urlencoded`), s"track=#$query")
       val rq = HttpRequest(HttpMethods.POST, uri = uri, entity = post) ~> authorize
       sendTo(io).withResponsesReceivedBy(self)(rq)
     case ChunkedResponseStart(_) =>

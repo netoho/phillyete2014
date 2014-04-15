@@ -15,9 +15,6 @@ angular.module('tweets.app', ['d3.directives', 'tweets.directives'])
     $scope.executeExpression = function() {
       if (xhr != null) xhr.abort();
       var xhr = new XMLHttpRequest();
-      xhr.onerror = function(x) {
-        
-      };
       xhr.onprogress = function () {
         $scope.$apply(function() {
           var chunk = xhr.responseText.substring(offset);
@@ -25,7 +22,7 @@ angular.module('tweets.app', ['d3.directives', 'tweets.directives'])
           if (chunk.length > 0) $scope.values = JSON.parse(chunk);
         });
       };
-      xhr.open("POST", "http://localhost:8080/tweets?q=eclipse", true);
+      xhr.open("POST", "http://localhost:8080/tweets?q=" + $scope.expression, true);
       xhr.send();
       $scope.running = true;
     };

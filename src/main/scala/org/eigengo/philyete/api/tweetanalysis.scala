@@ -37,6 +37,7 @@ trait TweetAnalysisRoute extends Directives {
       case 'start =>
         reader ! query
       case _: Http.ConnectionClosed =>
+        responder ! ChunkedMessageEnd
         context.stop(reader)
         context.stop(self)
       case analysed: Map[String, Map[String, Int]] =>

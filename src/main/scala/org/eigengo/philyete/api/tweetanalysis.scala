@@ -15,9 +15,8 @@ trait TweetAnalysisRoute extends Directives {
 
   def tweetAnalysisRoute(implicit actorRefFactory: ActorRefFactory): Route =
     post {
-      path("tweets")
-        parameter('q)(sendTweetAnalysis)
-      }
+      path("tweets" / Segment)(sendTweetAnalysis)
+    }
 
   def sendTweetAnalysis(query: String)(ctx: RequestContext)(implicit actorRefFactory: ActorRefFactory): Unit = {
     actorRefFactory.actorOf(Props(new TweetAnalysisStreamingActor(query, ctx.responder)))

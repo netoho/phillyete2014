@@ -22,7 +22,7 @@ angular.module('tweets.app', ['d3.directives', 'tweets.directives'])
           if (chunk.length > 0) $scope.values = JSON.parse(chunk);
         });
       };
-      xhr.open("POST", "http://localhost:8080/tweets?q=" + $scope.expression, true);
+      xhr.open("POST", "http://localhost:8080/tweets/" + encodeURIComponent($scope.expression), true);
       xhr.send();
       $scope.running = true;
     };

@@ -27,6 +27,30 @@ trait OAuthTwitterAuthorization extends TwitterAuthorization {
   val authorize: (HttpRequest) => HttpRequest = oAuthAuthorizer(consumer, token)
 }
 
+object TweetReaderActor {
+  val twitterUri = Uri("https://stream.twitter.com/1.1/statuses/filter.json")
+}
+
+class TweetReaderActor(uri: Uri, receiver: ActorRef) extends Actor with TweetMarshaller {
+  this: TwitterAuthorization =>
+  val io = IO(Http)(context.system)
+  val sentimentAnalysis = new SentimentAnalysis with CSVLoadedSentimentSets
+
+  def receive: Receive = {
+    case query: String =>
+      val post = HttpEntity(ContentType(MediaTypes.`application/x-www-form-urlencoded`), s"track=$query")
+      val rq = HttpRequest(HttpMethods.POST, uri = uri, entity = post) ~> authorize
+      sendTo(io).withResponsesReceivedBy(self)(rq)
+    case ChunkedResponseStart(_) =>
+    case MessageChunk(entity, _) =>
+      TweetUnmarshaller(entity) match {
+        case Right(tweet) => receiver ! sentimentAnalysis.onTweet(tweet)
+        case _            =>
+      }
+    case _ =>
+  }
+}
+
 trait TweetMarshaller {
 
   implicit object TweetUnmarshaller extends Unmarshaller[Tweet] {
@@ -65,26 +89,3 @@ trait TweetMarshaller {
   }
 }
 
-object TweetReaderActor {
-  val twitterUri = Uri("https://stream.twitter.com/1.1/statuses/filter.json")
-}
-
-class TweetReaderActor(uri: Uri, receiver: ActorRef) extends Actor with TweetMarshaller {
-  this: TwitterAuthorization =>
-  val io = IO(Http)(context.system)
-  val sentimentAnalysis = new SentimentAnalysis with CSVLoadedSentimentSets
-
-  def receive: Receive = {
-    case query: String =>
-      val post = HttpEntity(ContentType(MediaTypes.`application/x-www-form-urlencoded`), s"track=#$query")
-      val rq = HttpRequest(HttpMethods.POST, uri = uri, entity = post) ~> authorize
-      sendTo(io).withResponsesReceivedBy(self)(rq)
-    case ChunkedResponseStart(_) =>
-    case MessageChunk(entity, _) =>
-      TweetUnmarshaller(entity) match {
-        case Right(tweet) => receiver ! sentimentAnalysis.onTweet(tweet)
-        case _            =>
-      }
-    case _ =>
-  }
-}

@@ -1,4 +1,4 @@
-package org.eigengo.philyete.api
+package org.eigengo.phillyete.api
 
 import akka.actor.{ActorRefFactory, Props, ActorSystem}
 import akka.io.IO

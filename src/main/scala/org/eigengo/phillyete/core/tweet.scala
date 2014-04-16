@@ -1,4 +1,4 @@
-package org.eigengo.philyete.core
+package org.eigengo.phillyete.core
 
 case class User(id: String, lang: String, followersCount: Int)
 

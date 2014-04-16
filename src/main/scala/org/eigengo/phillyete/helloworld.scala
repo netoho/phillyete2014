@@ -1,4 +1,4 @@
-package org.eigengo.philyete
+package org.eigengo.phillyete
 
 import akka.actor.{Props, ActorSystem, Actor}
 import spray.http.{HttpEntity, HttpResponse, HttpRequest}

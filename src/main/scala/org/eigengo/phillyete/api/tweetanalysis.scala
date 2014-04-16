@@ -1,10 +1,10 @@
-package org.eigengo.philyete.api
+package org.eigengo.phillyete.api
 
 import spray.routing.{Route, Directives}
 import akka.actor.{Props, Actor, ActorRefFactory, ActorRef}
 import spray.http._
 import spray.can.Http
-import org.eigengo.philyete.core.{OAuthTwitterAuthorization, TweetReaderActor}
+import org.eigengo.phillyete.core.{OAuthTwitterAuthorization, TweetReaderActor}
 import spray.json._
 import spray.http.HttpResponse
 import spray.routing.RequestContext

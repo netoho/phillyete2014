@@ -1,4 +1,4 @@
-package org.eigengo.philyete.core
+package org.eigengo.phillyete.core
 
 import spray.httpx.unmarshalling.{MalformedContent, Unmarshaller, Deserialized}
 import spray.http._
@@ -19,7 +19,7 @@ trait TwitterAuthorization {
 trait OAuthTwitterAuthorization extends TwitterAuthorization {
   import OAuth._
   val home = System.getProperty("user.home")
-  val lines = Source.fromFile(s"$home/.twitter/philyete2014").getLines().toList
+  val lines = Source.fromFile(s"$home/.twitter/phillyete2014").getLines().toList
 
   val consumer = Consumer(lines(0), lines(1))
   val token = Token(lines(2), lines(3))

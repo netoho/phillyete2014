@@ -28,7 +28,8 @@ trait TweetAnalysisRoute extends Directives {
       RawHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE") :: Nil
 
     import ContentTypes._
-    val reader = context.actorOf(Props(new TweetReaderActor(TweetReaderActor.twitterUri, self) with OAuthTwitterAuthorization))
+    val reader = context.actorOf(Props(new TweetReaderActor(TweetReaderActor.twitterUri, self)
+                                          with OAuthTwitterAuthorization))
     val responseStart = HttpResponse(entity = HttpEntity(`application/json`, "{}"), headers = allCrossOrigins)
     responder ! ChunkedResponseStart(responseStart).withAck('start)
 
@@ -40,12 +41,10 @@ trait TweetAnalysisRoute extends Directives {
         context.stop(reader)
         context.stop(self)
       case analysed: Map[String, Map[String, Int]] =>
-        // { "counts":{"positive.gurus":100, "negative.gurus": 200},
-        //   "languages":{"ar": 1, "en": 3}
-        // }
-
         val items = analysed.map { case (category, elements) => category ->
-          JsArray(elements.map { case (k, v) => JsObject("name" -> JsString(k), "value" -> JsNumber(v)) }.toList)
+          JsArray(elements.map {
+            case (k, v) => JsObject("name" -> JsString(k), "value" -> JsNumber(v))
+          }.toList)
         }
         val body = CompactPrinter(JsObject(items))
         responder ! MessageChunk(body)

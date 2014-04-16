@@ -12,7 +12,9 @@ class MainService(route: Route) extends HttpServiceActor {
 
 object MainService extends DemoRoute with UriMatchingRoute with HeadersMatchingRoute with CookiesMatchingRoute with TweetAnalysisRoute {
 
-  def route(arf: ActorRefFactory) = uriMatchingRoute ~ headersMatchingRoute ~ cookiesMatchingRoute ~ tweetAnalysisRoute(arf)
+  def route(arf: ActorRefFactory) =
+    uriMatchingRoute ~ headersMatchingRoute ~
+    cookiesMatchingRoute ~ tweetAnalysisRoute(arf)
 }
 
 object Main extends App {

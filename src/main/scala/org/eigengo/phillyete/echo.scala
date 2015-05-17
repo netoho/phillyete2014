@@ -32,7 +32,7 @@ object EchoServer extends App {
     // create two EchoManager and stop the application once one dies
     val watcher = inbox()
     watcher.watch(system.actorOf(Props(classOf[EchoManager], classOf[EchoHandler]), "echo"))
-    watcher.watch(system.actorOf(Props(classOf[EchoManager], classOf[SimpleEchoHandler]), "simple"))
+//    watcher.watch(system.actorOf(Props(classOf[EchoManager], classOf[SimpleEchoHandler]), "simple"))
     watcher.receive(10.minutes)
   }
 
@@ -48,7 +48,7 @@ class EchoManager(handlerClass: Class[_]) extends Actor with ActorLogging {
 
   // bind to the listen port; the port will automatically be closed once this actor dies
   override def preStart(): Unit = {
-    IO(Tcp) ! Bind(self, new InetSocketAddress("localhost", 0))
+    IO(Tcp) ! Bind(self, new InetSocketAddress("0.0.0.0", 8080))
   }
 
   // do not restart

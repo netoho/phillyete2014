@@ -18,6 +18,9 @@ class HelloWorldService extends Actor {
       println(sender)
       sender ! Http.Register(self)
     case r: HttpRequest =>
+      println(r.message.entity)
+      println(r.message.entity.data)
+      println(r.message.entity.data.asString)
       sender ! HttpResponse(entity = HttpEntity("Hello, world"))
   }
 }
